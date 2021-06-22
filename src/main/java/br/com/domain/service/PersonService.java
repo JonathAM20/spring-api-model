@@ -2,6 +2,8 @@ package br.com.domain.service;
 
 import br.com.domain.dao.IPersonDao;
 import br.com.domain.domain.Person;
+import br.com.domain.exception.IdInvalidServiceException;
+import br.com.domain.exception.NotExistDaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +19,12 @@ public class PersonService implements IPersonService {
 
     @Override
     public Person save(Person person) {
-        return dao.save(person);
+        try{
+            dao.save(person);
+        }catch (Exception ex){
+            throw new NotExistDaoException(ex.getLocalizedMessage());
+        }
+        return person;
     }
 
     @Override

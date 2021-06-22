@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "Pessoa")
+@Table(name = "tb_person")
 public class Person {
 
     @Id
@@ -14,9 +14,9 @@ public class Person {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "nome")
-    private String nome;
+    @Column(name = "ds_first_name", nullable = false)
+    private String firstName;
 
-    @Column(name = "sobrenome")
-    private String sobreNome;
+    @Column(name = "ds_last_name", nullable = false)
+    private String lastName;
 }

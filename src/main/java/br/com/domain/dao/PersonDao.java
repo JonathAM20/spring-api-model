@@ -1,6 +1,7 @@
 package br.com.domain.dao;
 
 import br.com.domain.domain.Person;
+import br.com.domain.exception.IdInvalidServiceException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -30,15 +31,17 @@ public class PersonDao implements IPersonDao {
 
     @Override
     public Person delete(Person person) {
-        entityManager.remove(person);
+        if (entityManager.contains(person)) {
+            entityManager.remove(person);
+        } else {
+            entityManager.remove(entityManager.merge(person));
+        }
         return person;
     }
 
     @Override
     public Person get(Long id) {
-        String jpql = "SELECT p FROM Person p WHERE p.id = " + id + "";
-        Query query = entityManager.createQuery(jpql);
-        return (Person) query.getSingleResult();
+        return entityManager.find(Person.class, id);
     }
 
     @Override

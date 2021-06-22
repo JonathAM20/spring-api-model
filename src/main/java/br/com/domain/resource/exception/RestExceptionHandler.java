@@ -102,6 +102,20 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity<Object> serverExceptionTest(Exception ex, WebRequest request) {
+
+        return handleExceptionInternal(
+                ex, ErrorDetail.builder()
+                        .addDetalhe("Um exceção foi lançada. (TESTE)")
+                        .addErro(ex.getMessage())
+                        .addStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .addHttpMethod(getHttpMethod(request))
+                        .addPath(getPath(request))
+                        .build(),
+                new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
     private String getPath(WebRequest request) {
 
         return ((ServletWebRequest) request).getRequest().getRequestURI();
