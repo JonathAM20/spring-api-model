@@ -1,4 +1,4 @@
-package br.com.domain.dao;
+package br.com.domain.repository;
 
 import br.com.domain.domain.Card;
 import org.springframework.stereotype.Repository;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 @Transactional
-public class CardDao implements ICardDao {
+public class CardRepository implements ICardRepository {
 
     @PersistenceContext
     private EntityManager entityManager;

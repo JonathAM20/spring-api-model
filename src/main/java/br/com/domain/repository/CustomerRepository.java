@@ -1,7 +1,6 @@
-package br.com.domain.dao;
+package br.com.domain.repository;
 
 import br.com.domain.domain.Customer;
-import br.com.domain.domain.Person;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -12,7 +11,7 @@ import java.util.List;
 
 @Repository
 @Transactional
-public class CustomerDao implements ICustomerDao {
+public class CustomerRepository implements ICustomerRepository {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -40,12 +39,25 @@ public class CustomerDao implements ICustomerDao {
     }
 
     @Override
-    public Customer get(Long id) {
+    public Customer findById(Long id) {
         return entityManager.find(Customer.class, id);
     }
 
     @Override
-    public List<Customer> list() {
+    public Customer findByPersonalCode(String personalCode) {
+        Customer customer = null;
+        String jpql = "select c from Customer c WHERE c.personalCode = '" + personalCode + "'";
+        Query query = entityManager.createQuery(jpql);
+        try{
+            customer = (Customer) query.getSingleResult();
+        }catch (Exception ex){
+            System.out.println(ex.getLocalizedMessage());
+        }
+        return customer;
+    }
+
+    @Override
+    public List<Customer> findAll() {
         String jpql = "select c from Customer c";
         Query query = entityManager.createQuery(jpql);
         return (List<Customer>) query.getResultList();

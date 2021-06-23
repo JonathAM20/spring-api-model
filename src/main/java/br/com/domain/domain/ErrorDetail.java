@@ -4,21 +4,22 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorDetail implements Serializable {
 
     private Integer statusCode;
-
     private String statusMessage;
-
     private String httpMethod;
-
-    private String erro;
-
+    private List<ErrorDTO> erros;
     private String detalhe;
-
     private String path;
+
+    public ErrorDetail(){
+        erros = new ArrayList<>();
+    }
 
     public int getStatusCode() {
         return statusCode;
@@ -32,8 +33,8 @@ public class ErrorDetail implements Serializable {
         return httpMethod;
     }
 
-    public String getErro() {
-        return erro;
+    public List<ErrorDTO> getErros() {
+        return erros;
     }
 
     public String getDetalhe() {
@@ -67,8 +68,8 @@ public class ErrorDetail implements Serializable {
             return this;
         }
 
-        public Builder addErro(String erro) {
-            this.erro.erro = erro;
+        public Builder addErro(List<ErrorDTO> erro) {
+            this.erro.erros.addAll(erro);
             return this;
         }
 

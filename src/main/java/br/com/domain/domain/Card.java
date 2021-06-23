@@ -21,7 +21,7 @@ public class Card {
     @JoinColumn(name="id_card_situation", nullable=false)
     private CardSituation cardSituation;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="id_customer", nullable=false)
     private Customer customer;
 }
