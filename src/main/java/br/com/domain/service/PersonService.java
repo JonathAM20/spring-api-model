@@ -1,49 +1,56 @@
 package br.com.domain.service;
 
-import br.com.domain.dao.IPersonDao;
+import br.com.domain.dao.PersonRepository;
 import br.com.domain.domain.Person;
-import br.com.domain.exception.IdInvalidServiceException;
-import br.com.domain.exception.NotExistDaoException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
-public class PersonService implements IPersonService {
+public class PersonService {
 
     @Autowired
-    private IPersonDao dao;
+    private PersonRepository repository;
 
-    @Override
     public Person save(Person person) {
-        try{
-            dao.save(person);
-        }catch (Exception ex){
-            throw new NotExistDaoException(ex.getLocalizedMessage());
-        }
-        return person;
+//        try{
+//            repository.save(person);
+//        }catch (Exception ex){
+//            throw new NotExistDaoException(ex.getLocalizedMessage());
+//        }
+//        return person;
+
+        return repository.save(person);
     }
 
-    @Override
-    public Person update(Person person) {
-        return dao.update(person);
+    public ResponseEntity<Person> update(Person person) {
+        return repository.findById(person.getId())
+                .map(record -> {
+                    record.setFirstName(person.getFirstName());
+                    record.setLastName(person.getLastName());
+                    Person updated = repository.save(record);
+                    return ResponseEntity.ok().body(updated);
+                }).orElse(ResponseEntity.notFound().build());
     }
 
-    @Override
-    public Person delete(Person person) {
-        return dao.delete(person);
+    public ResponseEntity<?> delete(Long id) {
+        return repository.findById(id)
+                .map(record -> {
+                    repository.deleteById(id);
+                    return ResponseEntity.ok().build();
+                }).orElse(ResponseEntity.notFound().build());
     }
 
-    @Override
-    public Person get(Long id) {
-        return dao.get(id);
+    public ResponseEntity<Person> get(Long id) {
+        return repository.findById(id)
+                .map(record -> ResponseEntity.ok().body(record))
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @Override
     public List<Person> list() {
-        return dao.list();
+        return repository.findAll();
     }
 }

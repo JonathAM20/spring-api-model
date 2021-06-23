@@ -16,27 +16,42 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({IdInvalidServiceException.class})
-    public ResponseEntity<Object> idInvalido(IdInvalidServiceException ex,
-                                                    WebRequest request) {
-
-        return handleExceptionInternal(
-                ex, ErrorDetail.builder()
-                        .addErro(ex.getMessage())
-                        .addStatus(HttpStatus.BAD_REQUEST)
-                        .addHttpMethod(getHttpMethod(request))
-                        .addPath(getPath(request))
-                        .build(),
-                new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
-    }
-
-//    @ExceptionHandler({org.hibernate.exception.ConstraintViolationException.class})
-//    public ResponseEntity<Object> constraintVioladaPadrao(org.hibernate.exception.ConstraintViolationException ex,
+//    @ExceptionHandler({IdInvalidServiceException.class})
+//    public ResponseEntity<Object> idInvalido(IdInvalidServiceException ex,
 //                                                    WebRequest request) {
 //
 //        return handleExceptionInternal(
-//                ex, DetalheErro.builder()
-//                        .addDetalhe("Constraint violada: " + ex.getConstraintName())
+//                ex, ErrorDetail.builder()
+//                        .addErro(ex.getMessage())
+//                        .addStatus(HttpStatus.BAD_REQUEST)
+//                        .addHttpMethod(getHttpMethod(request))
+//                        .addPath(getPath(request))
+//                        .build(),
+//                new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+//    }
+//
+////    @ExceptionHandler({org.hibernate.exception.ConstraintViolationException.class})
+////    public ResponseEntity<Object> constraintVioladaPadrao(org.hibernate.exception.ConstraintViolationException ex,
+////                                                    WebRequest request) {
+////
+////        return handleExceptionInternal(
+////                ex, DetalheErro.builder()
+////                        .addDetalhe("Constraint violada: " + ex.getConstraintName())
+////                        .addErro(ex.getMessage())
+////                        .addStatus(HttpStatus.CONFLICT)
+////                        .addHttpMethod(getHttpMethod(request))
+////                        .addPath(getPath(request))
+////                        .build(),
+////                new HttpHeaders(), HttpStatus.CONFLICT, request);
+////    }
+//
+//    @ExceptionHandler({ViolationConstraint.class})
+//    public ResponseEntity<Object> constraintViolada(ViolationConstraint ex,
+//                                                    WebRequest request) {
+//
+//        return handleExceptionInternal(
+//                ex, ErrorDetail.builder()
+//                        .addDetalhe("Constraint violada.")
 //                        .addErro(ex.getMessage())
 //                        .addStatus(HttpStatus.CONFLICT)
 //                        .addHttpMethod(getHttpMethod(request))
@@ -44,70 +59,69 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 //                        .build(),
 //                new HttpHeaders(), HttpStatus.CONFLICT, request);
 //    }
+//
+//    @ExceptionHandler({org.hibernate.PropertyValueException.class})
+//    public ResponseEntity<Object> propriedadeNula(org.hibernate.PropertyValueException ex, WebRequest request) {
+//
+//        return handleExceptionInternal(
+//                ex, ErrorDetail.builder()
+//                        .addDetalhe("O atributo '"+ ex.getPropertyName() +"' não pode ser nulo.")
+//                        .addErro(ex.getMessage())
+//                        .addStatus(HttpStatus.BAD_REQUEST)
+//                        .addHttpMethod(getHttpMethod(request))
+//                        .addPath(getPath(request))
+//                        .build(),
+//                new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+//    }
+//
+//    @ExceptionHandler({NotExistDaoException.class})
+//    public ResponseEntity<Object> entidadeNaoEncontrada(NotExistDaoException ex, WebRequest request) {
+//
+//        return handleExceptionInternal(
+//                ex, ErrorDetail.builder()
+//                        .addDetalhe("Recurso não encontrado na base de dados.")
+//                        .addErro(ex.getMessage())
+//                        .addStatus(HttpStatus.NOT_FOUND)
+//                        .addHttpMethod(getHttpMethod(request))
+//                        .addPath(getPath(request))
+//                        .build(),
+//                new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+//    }
+//
+//    @ExceptionHandler({NullPointerException.class, IllegalArgumentException.class})
+//    public ResponseEntity<Object> serverException(RuntimeException ex, WebRequest request) {
+//
+//        return handleExceptionInternal(
+//                ex, ErrorDetail.builder()
+//                        .addDetalhe("Um exceção foi lançada.")
+//                        .addErro(ex.getMessage())
+//                        .addStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//                        .addHttpMethod(getHttpMethod(request))
+//                        .addPath(getPath(request))
+//                        .build(),
+//                new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+//    }
 
-    @ExceptionHandler({ViolationConstraint.class})
-    public ResponseEntity<Object> constraintViolada(ViolationConstraint ex,
-                                                    WebRequest request) {
+//    @ExceptionHandler({Exception.class})
+//    public ResponseEntity<Object> serverExceptionTest(Exception ex, WebRequest request) {
+//
+//        return handleExceptionInternal(
+//                ex, ErrorDetail.builder()
+//                        .addDetalhe("Um exceção foi lançada. (Exception)")
+//                        .addErro(ex.getMessage())
+//                        .addStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//                        .addHttpMethod(getHttpMethod(request))
+//                        .addPath(getPath(request))
+//                        .build(),
+//                new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+//    }
+
+    @ExceptionHandler({NullPointerException.class})
+    public ResponseEntity<Object> serverNullPointerException(Exception ex, WebRequest request) {
 
         return handleExceptionInternal(
                 ex, ErrorDetail.builder()
-                        .addDetalhe("Constraint violada.")
-                        .addErro(ex.getMessage())
-                        .addStatus(HttpStatus.CONFLICT)
-                        .addHttpMethod(getHttpMethod(request))
-                        .addPath(getPath(request))
-                        .build(),
-                new HttpHeaders(), HttpStatus.CONFLICT, request);
-    }
-
-    @ExceptionHandler({org.hibernate.PropertyValueException.class})
-    public ResponseEntity<Object> propriedadeNula(org.hibernate.PropertyValueException ex, WebRequest request) {
-
-        return handleExceptionInternal(
-                ex, ErrorDetail.builder()
-                        .addDetalhe("O atributo '"+ ex.getPropertyName() +"' não pode ser nulo.")
-                        .addErro(ex.getMessage())
-                        .addStatus(HttpStatus.BAD_REQUEST)
-                        .addHttpMethod(getHttpMethod(request))
-                        .addPath(getPath(request))
-                        .build(),
-                new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
-    }
-
-    @ExceptionHandler({NotExistDaoException.class})
-    public ResponseEntity<Object> entidadeNaoEncontrada(NotExistDaoException ex, WebRequest request) {
-
-        return handleExceptionInternal(
-                ex, ErrorDetail.builder()
-                        .addDetalhe("Recurso não encontrado na base de dados.")
-                        .addErro(ex.getMessage())
-                        .addStatus(HttpStatus.NOT_FOUND)
-                        .addHttpMethod(getHttpMethod(request))
-                        .addPath(getPath(request))
-                        .build(),
-                new HttpHeaders(), HttpStatus.NOT_FOUND, request);
-    }
-
-    @ExceptionHandler({NullPointerException.class, IllegalArgumentException.class})
-    public ResponseEntity<Object> serverException(RuntimeException ex, WebRequest request) {
-
-        return handleExceptionInternal(
-                ex, ErrorDetail.builder()
-                        .addDetalhe("Um exceção foi lançada.")
-                        .addErro(ex.getMessage())
-                        .addStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .addHttpMethod(getHttpMethod(request))
-                        .addPath(getPath(request))
-                        .build(),
-                new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
-    }
-
-    @ExceptionHandler({Exception.class})
-    public ResponseEntity<Object> serverExceptionTest(Exception ex, WebRequest request) {
-
-        return handleExceptionInternal(
-                ex, ErrorDetail.builder()
-                        .addDetalhe("Um exceção foi lançada. (TESTE)")
+                        .addDetalhe("Um exceção foi lançada. (NullPointerException)")
                         .addErro(ex.getMessage())
                         .addStatus(HttpStatus.INTERNAL_SERVER_ERROR)
                         .addHttpMethod(getHttpMethod(request))
