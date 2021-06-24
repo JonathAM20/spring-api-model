@@ -14,6 +14,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -106,6 +107,23 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                         .addPath(getPath(request))
                         .build(),
                 new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler({AccessDeniedException.class})
+    public ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
+
+        List<ErrorDTO> list = new ArrayList<>();
+        list.add(buildError(ex.getMessage(), ex.getLocalizedMessage()));
+
+        return handleExceptionInternal(
+                ex, ErrorDetail.builder()
+                        .addDetalhe("Access denied")
+                        .addErro(list)
+                        .addStatus(HttpStatus.FORBIDDEN)
+                        .addHttpMethod(getHttpMethod(request))
+                        .addPath(getPath(request))
+                        .build(),
+                new HttpHeaders(), HttpStatus.FORBIDDEN, request);
     }
 
     private String getPath(WebRequest request) {
