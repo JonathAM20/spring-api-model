@@ -36,6 +36,6 @@ public class Customer {
     @Column(name = "ds_last_name", nullable = false, length = 50)
     private String lastName;
 
-    @OneToMany(mappedBy="customer", fetch = FetchType.EAGER)
-    private List<Card> cards;
+//    @OneToMany(mappedBy="customer", fetch = FetchType.EAGER)
+//    private List<Card> cards;
 }

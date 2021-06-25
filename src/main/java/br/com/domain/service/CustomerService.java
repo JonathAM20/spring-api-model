@@ -7,7 +7,6 @@ import br.com.domain.repository.ICustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,13 +19,6 @@ public class CustomerService implements ICustomerService{
     public Customer save(Customer customer) {
         Customer save = repository.findByPersonalCode(customer.getPersonalCode());
         if(save != null) throw new ViolationConstraintException("Customer already exist: " + customer.getPersonalCode());
-
-//        List<String> nullProperties = new ArrayList<>();
-//        if(customer.getPersonalCode().isEmpty() || customer.getPersonalCode() == null) nullProperties.add("personalCode");
-//        if(customer.getFirstName().isEmpty() || customer.getFirstName() == null) nullProperties.add("fisrtName");
-//        if(customer.getLastName().isEmpty() || customer.getLastName() == null) nullProperties.add("lastName");
-//        if(nullProperties.size() > 0) throw new NullPointerException("Required properties: " + nullProperties.toString());
-
         return repository.save(customer);
     }
 
@@ -34,13 +26,6 @@ public class CustomerService implements ICustomerService{
     public Customer update(Customer customer) {
         Customer update = repository.findById(customer.getId());
         if(update != null){
-
-//            List<String> nullProperties = new ArrayList<>();
-//            if(customer.getPersonalCode().isEmpty() || customer.getPersonalCode() == null) nullProperties.add("personalCode");
-//            if(customer.getFirstName().isEmpty() || customer.getFirstName() == null) nullProperties.add("fisrtName");
-//            if(customer.getLastName().isEmpty() || customer.getLastName() == null) nullProperties.add("lastName");
-//            if(nullProperties.size() > 0) throw new NullPointerException("Required properties: " + nullProperties.toString());
-
             repository.update(customer);
         } else {
             throw new NotExistException("Id: " + customer.getId());
