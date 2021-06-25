@@ -39,12 +39,25 @@ public class CardSituationRepository implements ICardSituationRepository {
     }
 
     @Override
-    public CardSituation get(Long id) {
+    public CardSituation findById(Long id) {
         return entityManager.find(CardSituation.class, id);
     }
 
     @Override
-    public List<CardSituation> list() {
+    public CardSituation findBySituation(String situation) {
+        CardSituation cardSituation = null;
+        String jpql = "select c from CardSituation c WHERE c.situation = '" + situation + "'";
+        Query query = entityManager.createQuery(jpql);
+        try{
+            cardSituation = (CardSituation) query.getSingleResult();
+        }catch (Exception ex){
+            System.out.println(ex.getLocalizedMessage());
+        }
+        return cardSituation;
+    }
+
+    @Override
+    public List<CardSituation> findAll() {
         String jpql = "select c from CardSituation c";
         Query query = entityManager.createQuery(jpql);
         return (List<CardSituation>) query.getResultList();
