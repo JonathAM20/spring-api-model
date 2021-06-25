@@ -1,17 +1,15 @@
-package br.com.domain.repository;
+package br.com.domain.service;
 
 import br.com.domain.domain.Card;
-import br.com.domain.domain.Customer;
 
 import java.util.List;
 
-public interface ICardRepository {
+public interface ICardService {
 
     Card save(Card card);
     Card update(Card card);
-    Card delete(Card card);
+    Card delete(Long id);
     Card findById(Long id);
-    Card findByPan(String pan);
     List<Card> findByCustomerId(Long id);
     List<Card> findAll();
 }
