@@ -1,55 +1,46 @@
 package br.com.domain.service;
 
-import br.com.domain.domain.Card;
 import br.com.domain.domain.CardSituation;
-import br.com.domain.exception.NotExistException;
 import br.com.domain.exception.ViolationConstraintException;
-import br.com.domain.repository.ICardRepository;
-import br.com.domain.repository.ICardSituationRepository;
+import br.com.domain.repository.CardSituationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
-public class CardSituationService implements ICardSituationService {
+public class CardSituationService {
 
     @Autowired
-    private ICardSituationRepository repository;
+    private CardSituationRepository repository;
 
-    @Override
     public CardSituation save(CardSituation cardSituation) {
         CardSituation save = repository.findBySituation(cardSituation.getSituation());
         if(save != null) throw new ViolationConstraintException("Card already exist: " + cardSituation.getSituation());
         return repository.save(cardSituation);
     }
 
-    @Override
     public CardSituation update(CardSituation cardSituation) {
-        CardSituation update = repository.findById(cardSituation.getId());
-        if(update != null){
-            repository.update(cardSituation);
+        CardSituation update = repository.findById(cardSituation.getId()).get();
+        if(update.getSituation().equals(cardSituation.getSituation())){
+            repository.save(cardSituation);
         } else {
-            throw new NotExistException("Id: " + cardSituation.getId());
+            CardSituation validationSituation = repository.findBySituation(cardSituation.getSituation());
+            if(validationSituation != null) throw new ViolationConstraintException("CardSituation already exist: " + cardSituation.getSituation());
+            repository.save(cardSituation);
         }
         return cardSituation;
     }
 
-    @Override
     public CardSituation delete(Long id) {
-        CardSituation cardSituation = repository.findById(id);
-        if(cardSituation == null) throw new NotExistException("Id: " + id);
+        CardSituation cardSituation = repository.findById(id).get();
         repository.delete(cardSituation);
         return cardSituation;
     }
 
     public CardSituation findById(Long id) {
-        CardSituation cardSituation = repository.findById(id);
-        if(cardSituation == null) throw new NotExistException("Id: " + id);
-        return cardSituation;
+        return repository.findById(id).get();
     }
 
-    public List<CardSituation> findAll() {
+    public Iterable<CardSituation> findAll() {
         return repository.findAll();
     }
 }

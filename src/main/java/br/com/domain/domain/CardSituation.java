@@ -1,7 +1,6 @@
 package br.com.domain.domain;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -18,7 +17,6 @@ public class CardSituation {
     private Long id;
 
     @NotNull
-    @NotBlank
     @Size(min = 5, max = 50)
     @Column(name = "ds_situation", nullable = false, length = 50)
     private String situation;

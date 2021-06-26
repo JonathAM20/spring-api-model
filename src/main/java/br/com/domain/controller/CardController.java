@@ -3,25 +3,20 @@ package br.com.domain.controller;
 import br.com.domain.domain.Card;
 import br.com.domain.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(
-        value = "/card",
-        produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
-        consumes = MediaType.APPLICATION_JSON_UTF8_VALUE
-)
+@RequestMapping(value = "/card")
 public class CardController {
 
     @Autowired
     private CardService service;
 
     @GetMapping
-    public List<Card> findAll(){
+    public Iterable<Card> findAll(){
         return service.findAll();
     }
 

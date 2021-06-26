@@ -3,26 +3,19 @@ package br.com.domain.controller;
 import br.com.domain.domain.Customer;
 import br.com.domain.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
-@RequestMapping(
-        value = "/customer",
-        produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
-        consumes = MediaType.APPLICATION_JSON_UTF8_VALUE
-)
+@RequestMapping(value = "/customer")
 public class CustomerController {
 
     @Autowired
     private CustomerService service;
 
     @GetMapping
-    public List<Customer> findAll(){
+    public Iterable<Customer> findAll(){
         return service.findAll();
     }
 

@@ -2,8 +2,6 @@ package br.com.domain.exception;
 
 import br.com.domain.domain.ErrorDTO;
 import br.com.domain.domain.ErrorDetail;
-import br.com.domain.exception.NotExistException;
-import br.com.domain.exception.ViolationConstraintException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,20 +40,23 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
-//    @ExceptionHandler({org.hibernate.exception.ConstraintViolationException.class})
-//    public ResponseEntity<Object> constraintVioladaPadrao(org.hibernate.exception.ConstraintViolationException ex,
-//                                                    WebRequest request) {
-//
-//        return handleExceptionInternal(
-//                ex, DetalheErro.builder()
-//                        .addDetalhe("Constraint violada: " + ex.getConstraintName())
-//                        .addErro(ex.getMessage())
-//                        .addStatus(HttpStatus.CONFLICT)
-//                        .addHttpMethod(getHttpMethod(request))
-//                        .addPath(getPath(request))
-//                        .build(),
-//                new HttpHeaders(), HttpStatus.CONFLICT, request);
-//    }
+    @ExceptionHandler({org.hibernate.exception.ConstraintViolationException.class})
+    public ResponseEntity<Object> constraintViolationException(org.hibernate.exception.ConstraintViolationException ex,
+                                                    WebRequest request) {
+
+        List<ErrorDTO> list = new ArrayList<>();
+        list.add(buildError(ex.getSQLState(), ex.getLocalizedMessage()));
+
+        return handleExceptionInternal(
+                ex, ErrorDetail.builder()
+                        .addDetalhe("Violated constraint")
+                        .addErro(list)
+                        .addStatus(HttpStatus.CONFLICT)
+                        .addHttpMethod(getHttpMethod(request))
+                        .addPath(getPath(request))
+                        .build(),
+                new HttpHeaders(), HttpStatus.CONFLICT, request);
+    }
 
     @ExceptionHandler({ViolationConstraintException.class})
     public ResponseEntity<Object> violationConstraintException(ViolationConstraintException ex,
@@ -75,24 +76,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 
-    @ExceptionHandler({NotExistException.class})
-    public ResponseEntity<Object> notExistException(NotExistException ex, WebRequest request) {
-
-        List<ErrorDTO> list = new ArrayList<>();
-        list.add(buildError(ex.getMessage(), ex.getLocalizedMessage()));
-
-        return handleExceptionInternal(
-                ex, ErrorDetail.builder()
-                        .addDetalhe("Customer doesn't exist in local database.")
-                        .addErro(list)
-                        .addStatus(HttpStatus.NOT_FOUND)
-                        .addHttpMethod(getHttpMethod(request))
-                        .addPath(getPath(request))
-                        .build(),
-                new HttpHeaders(), HttpStatus.NOT_FOUND, request);
-    }
-
-    @ExceptionHandler({NullPointerException.class, IllegalArgumentException.class, Exception.class})
+    @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> serverException(RuntimeException ex, WebRequest request) {
 
         List<ErrorDTO> list = new ArrayList<>();

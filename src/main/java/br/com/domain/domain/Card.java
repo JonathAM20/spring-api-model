@@ -1,7 +1,6 @@
 package br.com.domain.domain;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -18,7 +17,6 @@ public class Card {
     private Long id;
 
     @NotNull
-    @NotBlank
     @Size(min = 16, max = 16)
     @Column(name = "cd_pan", nullable = false, length = 16)
     private String pan;
