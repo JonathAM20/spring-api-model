@@ -1,4 +1,4 @@
-package br.com.domain.resource.rest;
+package br.com.domain.controller;
 
 import br.com.domain.domain.CardSituation;
 import br.com.domain.service.CardSituationService;

@@ -1,4 +1,4 @@
-package br.com.domain.resource.exception;
+package br.com.domain.exception;
 
 import br.com.domain.domain.ErrorDTO;
 import br.com.domain.domain.ErrorDetail;
