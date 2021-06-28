@@ -34,4 +34,8 @@ public class Customer {
     @Size(min = 2, max = 50)
     @Column(name = "ds_last_name", nullable = false, length = 50)
     private String lastName;
+
+    public Customer(Long id) {
+        this.id = id;
+    }
 }
