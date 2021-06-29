@@ -7,6 +7,7 @@ import br.com.domain.exception.ViolationConstraintException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.transaction.TransactionSystemException;
 
 import javax.validation.ConstraintViolationException;
@@ -48,6 +49,7 @@ class CardServiceTest {
         );
 
         assertAll("update()",
+                () -> assertThrows(InvalidDataAccessApiUsageException.class, ()->{service.update(new Card(null, "0000000000000000", new CardSituation(1L), new Customer(2L)));}),
                 () -> assertThrows(TransactionSystemException.class, ()->{service.update(new Card(idCard.get(), null, new CardSituation(1L), new Customer(2L)));}),
                 () -> assertThrows(TransactionSystemException.class, ()->{service.update(new Card(idCard.get(), "0", new CardSituation(1L), new Customer(2L)));}),
                 () -> assertThrows(TransactionSystemException.class, ()->{service.update(new Card(idCard.get(), "0000000000000000", null, new Customer(2L)));}),
