@@ -1,8 +1,6 @@
 package br.com.domain.service;
 
-import br.com.domain.domain.Card;
 import br.com.domain.domain.CardSituation;
-import br.com.domain.domain.Customer;
 import br.com.domain.exception.ViolationConstraintException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
