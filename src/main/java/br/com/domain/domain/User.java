@@ -39,4 +39,7 @@ public class User {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="id_user_situation", nullable=false)
     private UserSituation userSituation;
+
+    @Transient
+    private String token;
 }
