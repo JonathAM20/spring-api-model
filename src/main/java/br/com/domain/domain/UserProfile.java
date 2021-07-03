@@ -24,4 +24,8 @@ public class UserProfile {
     @Size(min = 5, max = 50)
     @Column(name = "ds_profile", nullable = false, length = 50)
     private String profile;
+
+    public UserProfile(Long id) {
+        this.id = id;
+    }
 }

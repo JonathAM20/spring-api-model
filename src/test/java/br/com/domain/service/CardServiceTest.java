@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CardServiceTest {
 
     @Autowired
-    CardService service;
+    private CardService service;
 
     @Test
     void all() {
@@ -54,7 +54,7 @@ class CardServiceTest {
                 () -> assertThrows(TransactionSystemException.class, ()->{service.update(new Card(idCard.get(), "0", new CardSituation(1L), new Customer(2L)));}),
                 () -> assertThrows(TransactionSystemException.class, ()->{service.update(new Card(idCard.get(), "0000000000000000", null, new Customer(2L)));}),
                 () -> assertThrows(TransactionSystemException.class, ()->{service.update(new Card(idCard.get(), "0000000000000000", new CardSituation(1L), null));}),
-                () -> assertDoesNotThrow(()->{idCard.set(service.update(new Card(idCard.get(), "0000000000000000", new CardSituation(1L), new Customer(2L))).getId());}),
+                () -> assertDoesNotThrow(()->{service.update(new Card(idCard.get(), "0000000000000000", new CardSituation(1L), new Customer(2L)));}),
                 () -> assertThrows(ViolationConstraintException.class, ()->{service.update(new Card(idCard.get(), "1234567898765432", new CardSituation(1L), new Customer(2L)));}),
                 () -> assertThrows(NoSuchElementException.class, ()->{service.update(new Card(1L, "0000000000000000", new CardSituation(1L), new Customer(2L)));})
         );

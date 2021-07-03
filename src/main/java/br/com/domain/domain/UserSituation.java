@@ -24,4 +24,8 @@ public class UserSituation {
     @Size(min = 5, max = 50)
     @Column(name = "ds_situation", nullable = false, length = 50)
     private String situation;
+
+    public UserSituation(Long id) {
+        this.id = id;
+    }
 }
