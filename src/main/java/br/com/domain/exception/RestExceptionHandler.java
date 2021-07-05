@@ -12,7 +12,6 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -76,32 +75,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 
-    @ExceptionHandler({Exception.class})
-    public ResponseEntity<Object> serverException(RuntimeException ex, WebRequest request) {
+    @ExceptionHandler({InvalidUserException.class})
+    public ResponseEntity<Object> invalidUserException(InvalidUserException ex,
+                                                        WebRequest request) {
 
         List<ErrorDTO> list = new ArrayList<>();
         list.add(buildError(ex.getMessage(), ex.getLocalizedMessage()));
 
         return handleExceptionInternal(
                 ex, ErrorDetail.builder()
-                        .addDetalhe("An exception was found.")
-                        .addErro(list)
-                        .addStatus(HttpStatus.BAD_REQUEST)
-                        .addHttpMethod(getHttpMethod(request))
-                        .addPath(getPath(request))
-                        .build(),
-                new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
-    }
-
-    @ExceptionHandler({AccessDeniedException.class})
-    public ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
-
-        List<ErrorDTO> list = new ArrayList<>();
-        list.add(buildError(ex.getMessage(), ex.getLocalizedMessage()));
-
-        return handleExceptionInternal(
-                ex, ErrorDetail.builder()
-                        .addDetalhe("Access denied")
+                        .addDetalhe("Invalid User")
                         .addErro(list)
                         .addStatus(HttpStatus.FORBIDDEN)
                         .addHttpMethod(getHttpMethod(request))
