@@ -10,11 +10,17 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorDetail implements Serializable {
 
+    public static final String STATUS_CODE = "statusCode";
+    public static final String STATUS_MESSAGE = "statusMessage";
+    public static final String HTTP_METHOD = "httpMethod";
+    public static final String DETAIL = "detail";
+    public static final String PATH = "path";
+
     private Integer statusCode;
     private String statusMessage;
     private String httpMethod;
     private List<ErrorDTO> erros;
-    private String detalhe;
+    private String detail;
     private String path;
 
     public ErrorDetail(){
@@ -37,8 +43,8 @@ public class ErrorDetail implements Serializable {
         return erros;
     }
 
-    public String getDetalhe() {
-        return detalhe;
+    public String getDetail() {
+        return detail;
     }
 
     public String getPath() {
@@ -74,7 +80,7 @@ public class ErrorDetail implements Serializable {
         }
 
         public Builder addDetalhe(String detalhe) {
-            this.erro.detalhe = detalhe;
+            this.erro.detail = detalhe;
             return this;
         }
 

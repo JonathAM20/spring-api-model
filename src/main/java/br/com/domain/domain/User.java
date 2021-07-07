@@ -30,12 +30,10 @@ public class User {
     @Column(name = "ds_password", nullable = false, length = 50)
     private String password;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="id_user_profile", nullable=false)
     private UserProfile userProfile;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="id_user_situation", nullable=false)
     private UserSituation userSituation;
