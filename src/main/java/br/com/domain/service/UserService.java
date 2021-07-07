@@ -45,6 +45,14 @@ public class UserService implements UserDetailsService {
         return repository.findById(id).get();
     }
 
+    public User findByUsername(String username) {
+        return repository.findByUsername(username);
+    }
+
+    public User findByUsernameAndUserSituationId(String username, long userSituationId) {
+        return repository.findByUsernameAndUserSituationId(username, userSituationId);
+    }
+
     public Iterable<User> findAll() {
         return repository.findAll();
     }

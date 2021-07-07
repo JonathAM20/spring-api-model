@@ -76,11 +76,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({InvalidUserException.class})
-    public ResponseEntity<Object> invalidUserException(InvalidUserException ex,
-                                                        WebRequest request) {
+    public ResponseEntity<Object> invalidUserException(InvalidUserException ex, WebRequest request) {
 
         List<ErrorDTO> list = new ArrayList<>();
-        list.add(buildError(ex.getMessage(), ex.getLocalizedMessage()));
+        String[] errorFeatures = ex.getMessage().split("-");
+        list.add(buildError(errorFeatures[0], errorFeatures[1]));
 
         return handleExceptionInternal(
                 ex, ErrorDetail.builder()
