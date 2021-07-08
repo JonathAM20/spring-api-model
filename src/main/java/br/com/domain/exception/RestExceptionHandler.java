@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -91,6 +92,24 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                         .addPath(getPath(request))
                         .build(),
                 new HttpHeaders(), HttpStatus.FORBIDDEN, request);
+    }
+
+    @ExceptionHandler({NoSuchElementException.class})
+    public ResponseEntity<Object> noSuchElementException(NoSuchElementException ex, WebRequest request) {
+
+        List<ErrorDTO> list = new ArrayList<>();
+        String[] errorFeatures = ex.getMessage().split("-");
+        list.add(buildError(errorFeatures[0], errorFeatures[1]));
+
+        return handleExceptionInternal(
+                ex, ErrorDetail.builder()
+                        .addDetalhe("Invalid Customer")
+                        .addErro(list)
+                        .addStatus(HttpStatus.BAD_REQUEST)
+                        .addHttpMethod(getHttpMethod(request))
+                        .addPath(getPath(request))
+                        .build(),
+                new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     private String getPath(WebRequest request) {
