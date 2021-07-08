@@ -3,6 +3,7 @@ package br.com.domain.controller;
 import br.com.domain.domain.ErrorDetail;
 import br.com.domain.domain.User;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +31,7 @@ class AuthenticateControllerTest {
 
         RestAssured
                 .given()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(ContentType.JSON)
                     .body(user)
                 .when()
                     .post("http://localhost:" + port + PATH_ENDPOINT_RESOURCE)
@@ -49,7 +50,7 @@ class AuthenticateControllerTest {
 
         RestAssured
                 .given()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(ContentType.JSON)
                     .body(user)
                 .when()
                     .post("http://localhost:" + port + PATH_ENDPOINT_RESOURCE)
@@ -68,7 +69,7 @@ class AuthenticateControllerTest {
 
         RestAssured
                 .given()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(ContentType.JSON)
                     .body(user)
                 .when()
                     .post("http://localhost:" + port + PATH_ENDPOINT_RESOURCE)
@@ -87,7 +88,7 @@ class AuthenticateControllerTest {
 
         RestAssured
                 .given()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(ContentType.JSON)
                     .body(user)
                 .when()
                     .post("http://localhost:" + port + PATH_ENDPOINT_RESOURCE)
@@ -106,7 +107,7 @@ class AuthenticateControllerTest {
 
         RestAssured
                 .given()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(ContentType.JSON)
                     .body(user)
                 .when()
                     .post("http://localhost:" + port + PATH_ENDPOINT_RESOURCE)

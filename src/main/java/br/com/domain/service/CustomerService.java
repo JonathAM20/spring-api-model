@@ -6,6 +6,8 @@ import br.com.domain.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 public class CustomerService{
 
@@ -19,21 +21,29 @@ public class CustomerService{
     }
 
     public Customer update(Customer customer) {
-        Customer update = repository.findById(customer.getId()).get();
-        if(update.getPersonalCode().equals(customer.getPersonalCode())){
-            repository.save(customer);
-        } else {
-            Customer personalCodeValidation = repository.findByPersonalCode(customer.getPersonalCode());
-            if(personalCodeValidation != null) throw new ViolationConstraintException("Customer already exist: " + customer.getPersonalCode());
-            repository.save(customer);
+        try{
+            Customer update = repository.findById(customer.getId()).get();
+            if(update.getPersonalCode().equals(customer.getPersonalCode())){
+                repository.save(customer);
+            } else {
+                Customer personalCodeValidation = repository.findByPersonalCode(customer.getPersonalCode());
+                if(personalCodeValidation != null) throw new ViolationConstraintException("Customer already exist: " + customer.getPersonalCode());
+                repository.save(customer);
+            }
+        }catch (NoSuchElementException ex){
+            throw new NoSuchElementException("id-invalid id");
         }
         return customer;
     }
 
     public Customer delete(Long id) {
-        Customer customer = repository.findById(id).get();
-        repository.delete(customer);
-        return customer;
+        try{
+            Customer customer = repository.findById(id).get();
+            repository.delete(customer);
+            return customer;
+        }catch (NoSuchElementException ex){
+            throw new NoSuchElementException("id-invalid id");
+        }
     }
 
     public Customer findById(Long id) {
