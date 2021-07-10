@@ -6,7 +6,9 @@ import br.com.domain.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class CardService {
@@ -21,21 +23,33 @@ public class CardService {
     }
 
     public Card update(Card card) {
-        Card update = repository.findById(card.getId()).get();
-        if(update.getPan().equals(card.getPan())){
-            repository.save(card);
-        } else {
-            Card panValidation = repository.findByPan(card.getPan());
-            if(panValidation != null) throw new ViolationConstraintException("Card already exist: " + card.getPan());
-            repository.save(card);
+        try{
+            Card update = repository.findById(card.getId()).get();
+            if(update.getPan().equals(card.getPan())){
+                repository.save(card);
+            } else {
+                Card panValidation = repository.findByPan(card.getPan());
+                if(panValidation != null) throw new ViolationConstraintException("Card already exist: " + card.getPan());
+                repository.save(card);
+            }
+        } catch (NoSuchElementException ex){
+            throw new NoSuchElementException("id-invalid id");
+        } catch (EntityNotFoundException ex){
+            throw new EntityNotFoundException("cardSituation.id/customer.id-invalid");
         }
         return card;
     }
 
     public Card delete(Long id) {
-        Card card = repository.findById(id).get();
-        repository.delete(card);
-        return card;
+        try{
+            Card card = repository.findById(id).get();
+            repository.delete(card);
+            return card;
+        } catch (NoSuchElementException ex){
+            throw new NoSuchElementException("id-invalid id");
+        } catch (EntityNotFoundException ex){
+            throw new EntityNotFoundException("cardSituation.id/customer.id-invalid");
+        }
     }
 
     public Card findById(Long id) {

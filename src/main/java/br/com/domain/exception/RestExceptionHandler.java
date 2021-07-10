@@ -12,6 +12,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -110,6 +111,24 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                         .addPath(getPath(request))
                         .build(),
                 new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler({EntityNotFoundException.class})
+    public ResponseEntity<Object> entityNotFoundException(EntityNotFoundException ex, WebRequest request) {
+
+        List<ErrorDTO> list = new ArrayList<>();
+        if(ex.getMessage().contains("CardSituation")) list.add(buildError("CardSituation.id", "invalid"));
+        if(ex.getMessage().contains("Customer")) list.add(buildError("Customer.id", "invalid"));
+
+        return handleExceptionInternal(
+                ex, ErrorDetail.builder()
+                        .addDetalhe("Violated constraint")
+                        .addErro(list)
+                        .addStatus(HttpStatus.CONFLICT)
+                        .addHttpMethod(getHttpMethod(request))
+                        .addPath(getPath(request))
+                        .build(),
+                new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 
     private String getPath(WebRequest request) {
