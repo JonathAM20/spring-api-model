@@ -15,10 +15,10 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CardControllerTest {
+class CardSituationControllerTest {
 
     private static final String PATH_ENDPOINT_RESOURCE_AUTHENTICATE = "/spring-api-model/authenticate";
-    private static final String PATH_ENDPOINT_RESOURCE_CARD = "/spring-api-model/card";
+    private static final String PATH_ENDPOINT_RESOURCE_CARD_SITUATION = "/spring-api-model/card/situation";
     private static final String GET = "GET";
     private static final String POST = "POST";
     private static final String PUT = "PUT";
@@ -46,325 +46,262 @@ class CardControllerTest {
                 .post("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_AUTHENTICATE)
                 .jsonPath()
                 .get("token");
-
     }
 
     @Test
-    void findAll() {
+    void findAll(){
 
         Map<String, String> headers = new HashMap<String, String>(){
             {
-                put("Accept","application/json");
-                put("Authorization","Bearer " + token);
+                put("Content-Type", "application/json");
+                put("Authorization", "Bearer " + token);
             }
         };
 
         given()
                 .headers(headers)
                 .when()
-                .get("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD)
+                .get("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD_SITUATION)
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_OK);
     }
 
     @Test
-    void findById() {
+    void findById(){
 
         Map<String, String> headers = new HashMap<String, String>(){
             {
-                put("Accept","application/json");
-                put("Authorization","Bearer " + token);
+                put("Content-Type", "application/json");
+                put("Authorization", "Bearer " + token);
             }
         };
 
         given()
                 .headers(headers)
                 .when()
-                .get("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD + "/5")
+                .get("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD_SITUATION + "/1")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_OK);
     }
 
     @Test
-    void invalidfindByIdTest() {
+    void invalidfindByIdTest(){
 
         Map<String, String> headers = new HashMap<String, String>(){
             {
-                put("Accept","application/json");
-                put("Authorization","Bearer " + token);
+                put("Content-Type", "application/json");
+                put("Authorization", "Bearer " + token);
             }
         };
 
         given()
                 .headers(headers)
                 .when()
-                .get("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD + "/1")
+                .get("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD_SITUATION + "/3")
                 .then()
                 .body(ErrorDetail.STATUS_CODE, Matchers.comparesEqualTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()))
                 .body(ErrorDetail.STATUS_MESSAGE, Matchers.comparesEqualTo(BAD_REQUEST))
                 .body(ErrorDetail.HTTP_METHOD, Matchers.comparesEqualTo(GET))
                 .body(ErrorDetail.DETAIL, Matchers.comparesEqualTo(INVALID_DATA))
-                .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CARD + "/1"));
+                .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CARD_SITUATION + "/3"));
     }
 
     @Test
-    void validSaveUpdateDeleteTest() {
+    void validSaveUpdateDeleteTest(){
 
         Map<String, String> headers = new HashMap<String, String>(){
             {
-                put("Content-Type","application/json");
-                put("Authorization","Bearer " + token);
+                put("Content-Type", "application/json");
+                put("Authorization", "Bearer " + token);
             }
         };
 
-        Card card = new Card(null, "1111222233334444", new CardSituation(1L), new Customer(2L));
+        CardSituation cardSituation = new CardSituation(null, "TESTE");
 
-        card.setId(Integer.toUnsignedLong(
-                given()
-                        .headers(headers)
-                        .body(card)
-                        .when()
-                        .post("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD)
-                        .jsonPath()
-                        .get("id"))
+        cardSituation.setId(Integer.toUnsignedLong(given()
+                .headers(headers)
+                .body(cardSituation)
+                .post("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD_SITUATION)
+                .jsonPath()
+                .get("id"))
         );
 
         given()
                 .headers(headers)
-                .body(card)
-                .when()
-                .put("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD)
+                .body(cardSituation)
+                .put("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD_SITUATION)
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_OK);
 
         given()
                 .headers(headers)
-                .when()
-                .delete("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD + "/" + card.getId())
+                .body(cardSituation)
+                .delete("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD_SITUATION + "/" + cardSituation.getId())
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_OK);
     }
 
     @Test
-    void nullValuesSaveTest() {
+    void nullValuesSaveTest(){
 
         Map<String, String> headers = new HashMap<String, String>(){
             {
-                put("Content-Type","application/json");
-                put("Authorization","Bearer " + token);
+                put("Content-Type", "application/json");
+                put("Authorization", "Bearer " + token);
             }
         };
 
-        Card card = new Card(null, null, null, null);
+        CardSituation cardSituation = new CardSituation(null, null);
 
         given()
                 .headers(headers)
-                .body(card)
-                .when()
-                .post("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD)
+                .body(cardSituation)
+                .post("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD_SITUATION)
                 .then()
                 .body(ErrorDetail.STATUS_CODE, Matchers.comparesEqualTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()))
                 .body(ErrorDetail.STATUS_MESSAGE, Matchers.comparesEqualTo(BAD_REQUEST))
                 .body(ErrorDetail.HTTP_METHOD, Matchers.comparesEqualTo(POST))
                 .body(ErrorDetail.DETAIL, Matchers.comparesEqualTo(ERROR_VALIDATION))
-                .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CARD));
+                .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CARD_SITUATION));
     }
 
     @Test
-    void lengthValuesSaveTest() {
+    void lengthValuesSaveTest(){
 
         Map<String, String> headers = new HashMap<String, String>(){
             {
-                put("Content-Type","application/json");
-                put("Authorization","Bearer " + token);
+                put("Content-Type", "application/json");
+                put("Authorization", "Bearer " + token);
             }
         };
 
-        Card card = new Card(null, "1", new CardSituation(1L), new Customer(2L));
+        CardSituation cardSituation = new CardSituation(null, "s");
 
         given()
                 .headers(headers)
-                .body(card)
+                .body(cardSituation)
                 .when()
-                .post("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD)
+                .post("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD_SITUATION)
                 .then()
                 .body(ErrorDetail.STATUS_CODE, Matchers.comparesEqualTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()))
                 .body(ErrorDetail.STATUS_MESSAGE, Matchers.comparesEqualTo(BAD_REQUEST))
                 .body(ErrorDetail.HTTP_METHOD, Matchers.comparesEqualTo(POST))
                 .body(ErrorDetail.DETAIL, Matchers.comparesEqualTo(ERROR_VALIDATION))
-                .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CARD));
+                .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CARD_SITUATION));
     }
 
     @Test
-    void existCardSaveTest() {
+    void existCardSituationSaveTest(){
 
         Map<String, String> headers = new HashMap<String, String>(){
             {
-                put("Content-Type","application/json");
-                put("Authorization","Bearer " + token);
+                put("Content-Type", "application/json");
+                put("Authorization", "Bearer " + token);
             }
         };
 
-        Card card = new Card(null, "1234567898765432", new CardSituation(1L), new Customer(2L));
+        CardSituation cardSituation = new CardSituation(null, "ATIVO");
 
         given()
                 .headers(headers)
-                .body(card)
+                .body(cardSituation)
                 .when()
-                .post("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD)
+                .post("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD_SITUATION)
                 .then()
                 .body(ErrorDetail.STATUS_CODE, Matchers.comparesEqualTo(org.springframework.http.HttpStatus.CONFLICT.value()))
                 .body(ErrorDetail.STATUS_MESSAGE, Matchers.comparesEqualTo(CONFLICT))
                 .body(ErrorDetail.HTTP_METHOD, Matchers.comparesEqualTo(POST))
                 .body(ErrorDetail.DETAIL, Matchers.comparesEqualTo(VIOLATED_CONSTRAINT))
-                .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CARD));
+                .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CARD_SITUATION));
     }
 
     @Test
-    void invalidForeignKeySaveTest(){
+    void invalidUpdateDeleteTest(){
 
         Map<String, String> headers = new HashMap<String, String>(){
             {
-                put("Content-Type","application/json");
-                put("Authorization","Bearer " + token);
+                put("Content-Type", "application/json");
+                put("Authorization", "Bearer " + token);
             }
         };
 
-        Card card = new Card(null, "1111222233334444", new CardSituation(3L), new Customer(1L));
+        CardSituation cardSituation = new CardSituation(null, "TESTE");
 
-        given()
-                .headers(headers)
-                .body(card)
-                .when()
-                .post("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD)
-                .then()
-                .body(ErrorDetail.STATUS_CODE, Matchers.comparesEqualTo(org.springframework.http.HttpStatus.CONFLICT.value()))
-                .body(ErrorDetail.STATUS_MESSAGE, Matchers.comparesEqualTo(CONFLICT))
-                .body(ErrorDetail.HTTP_METHOD, Matchers.comparesEqualTo(POST))
-                .body(ErrorDetail.DETAIL, Matchers.comparesEqualTo(VIOLATED_CONSTRAINT))
-                .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CARD));
-    }
-
-    @Test
-    void invalidUpdateDeleteTest() {
-
-        Map<String, String> headers = new HashMap<String, String>(){
-            {
-                put("Content-Type","application/json");
-                put("Authorization","Bearer " + token);
-            }
-        };
-
-        Card card = new Card(null, "1111222233334444", new CardSituation(1L), new Customer(2L));
-
-        card.setId(Integer.toUnsignedLong(
+        cardSituation.setId(Integer.toUnsignedLong(
                 given()
                         .headers(headers)
-                        .body(card)
+                        .body(cardSituation)
                         .when()
-                        .post("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD)
+                        .post("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD_SITUATION)
                         .jsonPath()
                         .get("id"))
         );
 
-        card.setPan("1234567898765432");
+        cardSituation.setSituation(null);
 
         given()
                 .headers(headers)
-                .body(card)
+                .body(cardSituation)
                 .when()
-                .put("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD)
-                .then()
-                .body(ErrorDetail.STATUS_CODE, Matchers.comparesEqualTo(org.springframework.http.HttpStatus.CONFLICT.value()))
-                .body(ErrorDetail.STATUS_MESSAGE, Matchers.comparesEqualTo(CONFLICT))
-                .body(ErrorDetail.HTTP_METHOD, Matchers.comparesEqualTo(PUT))
-                .body(ErrorDetail.DETAIL, Matchers.comparesEqualTo(VIOLATED_CONSTRAINT))
-                .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CARD));
-
-        card.setPan("1");
-
-        given()
-                .headers(headers)
-                .body(card)
-                .when()
-                .put("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD)
+                .put("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD_SITUATION)
                 .then()
                 .body(ErrorDetail.STATUS_CODE, Matchers.comparesEqualTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()))
                 .body(ErrorDetail.STATUS_MESSAGE, Matchers.comparesEqualTo(BAD_REQUEST))
                 .body(ErrorDetail.HTTP_METHOD, Matchers.comparesEqualTo(PUT))
                 .body(ErrorDetail.DETAIL, Matchers.comparesEqualTo(ERROR_VALIDATION))
-                .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CARD));
+                .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CARD_SITUATION));
 
-        card.setPan(null);
-        card.setCardSituation(null);
-        card.setCustomer(null);
+        cardSituation.setSituation("s");
 
         given()
                 .headers(headers)
-                .body(card)
+                .body(cardSituation)
                 .when()
-                .put("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD)
+                .put("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD_SITUATION)
                 .then()
                 .body(ErrorDetail.STATUS_CODE, Matchers.comparesEqualTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()))
                 .body(ErrorDetail.STATUS_MESSAGE, Matchers.comparesEqualTo(BAD_REQUEST))
                 .body(ErrorDetail.HTTP_METHOD, Matchers.comparesEqualTo(PUT))
                 .body(ErrorDetail.DETAIL, Matchers.comparesEqualTo(ERROR_VALIDATION))
-                .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CARD));
+                .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CARD_SITUATION));
 
-        card.setPan("1111222233334444");
-        card.setCardSituation(new CardSituation(3L));
-        card.setCustomer(new Customer(1L));
+        cardSituation.setSituation("ATIVO");
 
         given()
                 .headers(headers)
-                .body(card)
+                .body(cardSituation)
                 .when()
-                .put("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD)
+                .put("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD_SITUATION)
                 .then()
                 .body(ErrorDetail.STATUS_CODE, Matchers.comparesEqualTo(org.springframework.http.HttpStatus.CONFLICT.value()))
                 .body(ErrorDetail.STATUS_MESSAGE, Matchers.comparesEqualTo(CONFLICT))
                 .body(ErrorDetail.HTTP_METHOD, Matchers.comparesEqualTo(PUT))
                 .body(ErrorDetail.DETAIL, Matchers.comparesEqualTo(VIOLATED_CONSTRAINT))
-                .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CARD));
+                .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CARD_SITUATION));
+
+        cardSituation.setSituation("TESTE");
 
         given()
                 .headers(headers)
                 .when()
-                .delete("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD + "/" + 1)
+                .delete("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD_SITUATION + "/3")
                 .then()
                 .body(ErrorDetail.STATUS_CODE, Matchers.comparesEqualTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()))
                 .body(ErrorDetail.STATUS_MESSAGE, Matchers.comparesEqualTo(BAD_REQUEST))
                 .body(ErrorDetail.HTTP_METHOD, Matchers.comparesEqualTo(DELETE))
                 .body(ErrorDetail.DETAIL, Matchers.comparesEqualTo(INVALID_DATA))
-                .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CARD + "/1"));
+                .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CARD_SITUATION + "/3"));
 
         given()
                 .headers(headers)
                 .when()
-                .delete("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD + "/" + card.getId())
+                .delete("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD_SITUATION + "/" + cardSituation.getId())
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_OK);
-
-        card.setId(1L);
-        card.setPan("1111222233334444");
-        card.setCardSituation(new CardSituation(1L));
-        card.setCustomer(new Customer(2L));
-
-        given()
-                .headers(headers)
-                .body(card)
-                .when()
-                .put("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CARD)
-                .then()
-                .body(ErrorDetail.STATUS_CODE, Matchers.comparesEqualTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()))
-                .body(ErrorDetail.STATUS_MESSAGE, Matchers.comparesEqualTo(BAD_REQUEST))
-                .body(ErrorDetail.HTTP_METHOD, Matchers.comparesEqualTo(PUT))
-                .body(ErrorDetail.DETAIL, Matchers.comparesEqualTo(INVALID_DATA))
-                .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CARD));
     }
 }

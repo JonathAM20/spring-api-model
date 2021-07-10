@@ -19,7 +19,7 @@ public class UserService implements UserDetailsService {
 
     public User save(User user) {
         User save = repository.findByUsername(user.getUsername());
-        if(save != null) throw new ViolationConstraintException("User already exist: " + user.getUsername());
+        if(save != null) throw new ViolationConstraintException("username-already exist");
         return repository.save(user);
     }
 
@@ -29,7 +29,7 @@ public class UserService implements UserDetailsService {
             repository.save(user);
         } else {
             User usernameValidation = repository.findByUsername(user.getUsername());
-            if(usernameValidation != null) throw new ViolationConstraintException("User already exist: " + user.getUsername());
+            if(usernameValidation != null) throw new ViolationConstraintException("username-already exist");
             repository.save(user);
         }
         return user;

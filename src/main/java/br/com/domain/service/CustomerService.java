@@ -16,7 +16,7 @@ public class CustomerService{
 
     public Customer save(Customer customer) {
         Customer save = repository.findByPersonalCode(customer.getPersonalCode());
-        if(save != null) throw new ViolationConstraintException("Customer already exist: " + customer.getPersonalCode());
+        if(save != null) throw new ViolationConstraintException("personalCode-already exist");
         return repository.save(customer);
     }
 
@@ -27,11 +27,11 @@ public class CustomerService{
                 repository.save(customer);
             } else {
                 Customer personalCodeValidation = repository.findByPersonalCode(customer.getPersonalCode());
-                if(personalCodeValidation != null) throw new ViolationConstraintException("Customer already exist: " + customer.getPersonalCode());
+                if(personalCodeValidation != null) throw new ViolationConstraintException("personalCode-already exist");
                 repository.save(customer);
             }
         }catch (NoSuchElementException ex){
-            throw new NoSuchElementException("id-invalid id");
+            throw new NoSuchElementException("id-invalid");
         }
         return customer;
     }
@@ -42,12 +42,16 @@ public class CustomerService{
             repository.delete(customer);
             return customer;
         }catch (NoSuchElementException ex){
-            throw new NoSuchElementException("id-invalid id");
+            throw new NoSuchElementException("id-invalid");
         }
     }
 
     public Customer findById(Long id) {
-        return repository.findById(id).get();
+        try{
+            return repository.findById(id).get();
+        }catch (NoSuchElementException ex){
+            throw new NoSuchElementException("id-invalid");
+        }
     }
 
     public Iterable<Customer> findAll() {

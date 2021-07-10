@@ -21,6 +21,7 @@ class CustomerControllerTest {
 
     private static final String PATH_ENDPOINT_RESOURCE_AUTHENTICATE = "/spring-api-model/authenticate";
     private static final String PATH_ENDPOINT_RESOURCE_CUSTOMER = "/spring-api-model/customer";
+    private static final String GET = "GET";
     private static final String POST = "POST";
     private static final String PUT = "PUT";
     private static final String DELETE = "DELETE";
@@ -28,7 +29,7 @@ class CustomerControllerTest {
     private static final String CONFLICT = "Conflict";
     private static final String ERROR_VALIDATION = "Error validation";
     private static final String VIOLATED_CONSTRAINT = "Violated constraint";
-    private static final String INVALID_CUSTOMER = "Invalid Customer";
+    private static final String INVALID_DATA = "Invalid Data";
 
     private String token = "";
 
@@ -70,7 +71,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    void get() {
+    void findById() {
 
         Map<String, String> headers = new HashMap<String, String>(){
             {
@@ -86,6 +87,28 @@ class CustomerControllerTest {
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
+    void invalidfindByIdTest() {
+
+        Map<String, String> headers = new HashMap<String, String>(){
+            {
+                put("Accept","application/json");
+                put("Authorization","Bearer " + token);
+            }
+        };
+
+        given()
+                .headers(headers)
+                .when()
+                .get("http://localhost:" + port + PATH_ENDPOINT_RESOURCE_CUSTOMER + "/1")
+                .then()
+                .body(ErrorDetail.STATUS_CODE, Matchers.comparesEqualTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()))
+                .body(ErrorDetail.STATUS_MESSAGE, Matchers.comparesEqualTo(BAD_REQUEST))
+                .body(ErrorDetail.HTTP_METHOD, Matchers.comparesEqualTo(GET))
+                .body(ErrorDetail.DETAIL, Matchers.comparesEqualTo(INVALID_DATA))
+                .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CUSTOMER + "/1"));
     }
 
     @Test
@@ -188,7 +211,7 @@ class CustomerControllerTest {
             }
         };
 
-        Customer customer = new Customer(null, "99501651216", "Jonathan", "Sousa");
+        Customer customer = new Customer(null, "99501651215", "Jonathan", "Sousa");
 
         given()
                 .headers(headers)
@@ -279,7 +302,7 @@ class CustomerControllerTest {
                 .body(ErrorDetail.STATUS_CODE, Matchers.comparesEqualTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()))
                 .body(ErrorDetail.STATUS_MESSAGE, Matchers.comparesEqualTo(BAD_REQUEST))
                 .body(ErrorDetail.HTTP_METHOD, Matchers.comparesEqualTo(DELETE))
-                .body(ErrorDetail.DETAIL, Matchers.comparesEqualTo(INVALID_CUSTOMER))
+                .body(ErrorDetail.DETAIL, Matchers.comparesEqualTo(INVALID_DATA))
                 .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CUSTOMER + "/1"));
 
         given()
@@ -304,7 +327,7 @@ class CustomerControllerTest {
                 .body(ErrorDetail.STATUS_CODE, Matchers.comparesEqualTo(org.springframework.http.HttpStatus.BAD_REQUEST.value()))
                 .body(ErrorDetail.STATUS_MESSAGE, Matchers.comparesEqualTo(BAD_REQUEST))
                 .body(ErrorDetail.HTTP_METHOD, Matchers.comparesEqualTo(PUT))
-                .body(ErrorDetail.DETAIL, Matchers.comparesEqualTo(INVALID_CUSTOMER))
+                .body(ErrorDetail.DETAIL, Matchers.comparesEqualTo(INVALID_DATA))
                 .body(ErrorDetail.PATH, Matchers.comparesEqualTo(PATH_ENDPOINT_RESOURCE_CUSTOMER));
     }
 }
