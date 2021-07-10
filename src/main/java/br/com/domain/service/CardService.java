@@ -18,7 +18,7 @@ public class CardService {
 
     public Card save(Card card) {
         Card save = repository.findByPan(card.getPan());
-        if(save != null) throw new ViolationConstraintException("Card already exist: " + card.getPan());
+        if(save != null) throw new ViolationConstraintException("pan-already exist");
         return repository.save(card);
     }
 
@@ -29,11 +29,11 @@ public class CardService {
                 repository.save(card);
             } else {
                 Card panValidation = repository.findByPan(card.getPan());
-                if(panValidation != null) throw new ViolationConstraintException("Card already exist: " + card.getPan());
+                if(panValidation != null) throw new ViolationConstraintException("pan-already exist");
                 repository.save(card);
             }
         } catch (NoSuchElementException ex){
-            throw new NoSuchElementException("id-invalid id");
+            throw new NoSuchElementException("id-invalid");
         } catch (EntityNotFoundException ex){
             throw new EntityNotFoundException("cardSituation.id/customer.id-invalid");
         }
@@ -46,14 +46,18 @@ public class CardService {
             repository.delete(card);
             return card;
         } catch (NoSuchElementException ex){
-            throw new NoSuchElementException("id-invalid id");
+            throw new NoSuchElementException("id-invalid");
         } catch (EntityNotFoundException ex){
             throw new EntityNotFoundException("cardSituation.id/customer.id-invalid");
         }
     }
 
     public Card findById(Long id) {
-        return repository.findById(id).get();
+        try{
+            return repository.findById(id).get();
+        } catch (NoSuchElementException ex){
+            throw new NoSuchElementException("id-invalid");
+        }
     }
 
     public List<Card> findByCustomerId(Long id) {

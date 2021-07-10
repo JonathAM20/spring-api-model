@@ -41,30 +41,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
-    @ExceptionHandler({org.hibernate.exception.ConstraintViolationException.class})
-    public ResponseEntity<Object> constraintViolationException(org.hibernate.exception.ConstraintViolationException ex,
-                                                    WebRequest request) {
-
-        List<ErrorDTO> list = new ArrayList<>();
-        list.add(buildError(ex.getSQLState(), ex.getLocalizedMessage()));
-
-        return handleExceptionInternal(
-                ex, ErrorDetail.builder()
-                        .addDetalhe("Violated constraint")
-                        .addErro(list)
-                        .addStatus(HttpStatus.CONFLICT)
-                        .addHttpMethod(getHttpMethod(request))
-                        .addPath(getPath(request))
-                        .build(),
-                new HttpHeaders(), HttpStatus.CONFLICT, request);
-    }
-
     @ExceptionHandler({ViolationConstraintException.class})
     public ResponseEntity<Object> violationConstraintException(ViolationConstraintException ex,
                                                     WebRequest request) {
 
         List<ErrorDTO> list = new ArrayList<>();
-        list.add(buildError(ex.getMessage(), ex.getLocalizedMessage()));
+        String[] errorFeatures = ex.getMessage().split("-");
+        list.add(buildError(errorFeatures[0], errorFeatures[1]));
 
         return handleExceptionInternal(
                 ex, ErrorDetail.builder()
@@ -104,7 +87,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
         return handleExceptionInternal(
                 ex, ErrorDetail.builder()
-                        .addDetalhe("Invalid Customer")
+                        .addDetalhe("Invalid Data")
                         .addErro(list)
                         .addStatus(HttpStatus.BAD_REQUEST)
                         .addHttpMethod(getHttpMethod(request))
