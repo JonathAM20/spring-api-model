@@ -47,14 +47,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf()
                 .disable()
+                .headers()
+                .disable()
                 .authorizeRequests()
-                .antMatchers("/authenticate", "/v2/api-docs/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**")
-                //.antMatchers("/authenticate")
-                .permitAll()
+                .antMatchers("/authenticate", "/v2/api-docs/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**", "/h2-console/**")
+                    .permitAll()
                 .anyRequest()
                     .authenticated()
                     .and()
-                //.exceptionHandling()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
