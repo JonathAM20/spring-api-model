@@ -21,7 +21,7 @@ public class CustomerController {
     @GetMapping(produces = "application/json")
     @ApiOperation(value = "List datas about overall customers")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 200, message = "Success", response = Customer[].class),
             @ApiResponse(code = 403, message = "Forbidden", response = ErrorDetail.class),
     })
     public Iterable<Customer> findAll(){
@@ -42,7 +42,7 @@ public class CustomerController {
     @PostMapping(consumes = "application/json", produces = "application/json")
     @ApiOperation(value = "Save datas of an specific customer")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 200, message = "Success", response = Customer.class),
             @ApiResponse(code = 403, message = "Forbidden", response = ErrorDetail.class),
             @ApiResponse(code = 404, message = "Bad Request", response = ErrorDetail.class),
             @ApiResponse(code = 409, message = "Conflict", response = ErrorDetail.class),
